@@ -1,0 +1,5 @@
+# Codex 界面元数据：控制 Skill 列表中的名称、简介和默认请求。
+interface:
+  display_name: "知识视频工作流"
+  short_description: "将中文文案制作成带旁白字幕和专用画面的知识科普视频"
+  default_prompt: "把我提供的主题和文案制作成中文知识科普视频，先确认文案和画面再渲染。"

@@ -1,0 +1,35 @@
+# 本地 Python 虚拟环境：体积大且包含机器相关路径，不提交到 Git。
+.venv/
+venv/
+
+# Python 运行缓存和测试缓存。
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# 视频生产输出：可能体积很大，也可能包含用户提供的私有文案。
+output/
+smoke-output/
+logs/
+*.mp4
+*.wav
+*.mp3
+*.srt
+*.ass
+
+# 本地演示/临时样例：避免把个人测试文案或旧工程误提交。
+examples/
+ai-agent-15s-index.html
+workflow-input.ai-agent-15s.json
+workflow-input.json
+
+# 本地密钥、环境变量和编辑器配置。
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+
+# 操作系统临时文件。
+.DS_Store
+Thumbs.db

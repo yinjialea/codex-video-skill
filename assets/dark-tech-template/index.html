@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>__TOPIC__</title>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="./scene-data.js"></script>
+  <style>
+    /* 暗色科技模板：场景内容由 scene-data.js 注入。 */
+    *{box-sizing:border-box}html,body{margin:0;background:#030714;color:#f5f7ff;font-family:sans-serif}
+    #composition{position:relative;width:1080px;height:1920px;overflow:hidden;background:#030714}
+    .scene{position:absolute;inset:0;padding:76px 64px 210px;display:flex;flex-direction:column;gap:32px;opacity:0;background:radial-gradient(circle at 90% 10%,rgba(169,133,255,.2),transparent 32%),radial-gradient(circle at 5% 85%,rgba(69,224,170,.14),transparent 34%),#030714}
+    .scene:first-child{opacity:1}.meta{display:flex;justify-content:space-between;color:#b9c7e5;font:20px monospace;letter-spacing:.1em}.meta b{color:#4ce8ff}
+    h1{margin:38px 0 0;font-size:76px;line-height:1.12;letter-spacing:-.04em}.stage{flex:1;padding:42px;border:1px solid rgba(185,199,229,.28);border-radius:34px;background:#071025}
+    .keywords{display:grid;grid-template-columns:1fr 1fr;gap:20px}.keyword{min-height:150px;padding:28px;border:2px solid #4ce8ff;border-radius:24px;background:#0b1732;font-size:30px;display:grid;place-items:center;text-align:center}.keyword:nth-child(even){border-color:#a985ff}
+    .summary{margin-top:34px;padding:30px;border-radius:24px;background:#f5f7ff;color:#061020;font-size:29px;line-height:1.5;font-weight:bold}.progress{height:8px;border-radius:8px;background:#15213d;overflow:hidden}.progress span{display:block;height:100%;background:#45e0aa}
+  </style>
+</head>
+<body>
+  <div id="composition" data-composition-id="knowledge-video" data-start="0" data-duration="__DURATION__" data-width="1080" data-height="1920" data-track-index="0"></div>
+  <script>
+    // 第一步：同步创建所有场景，确保 HyperFrames 能立即读取完整 DOM。
+    const scenes=window.__SCENE_DATA__||[],root=document.getElementById('composition');
+    scenes.forEach((scene,index)=>{const section=document.createElement('section');section.className='scene';section.id=scene.id;section.setAttribute('data-layout-allow-overflow','');const words=(scene.visual_keywords||[]).map(word=>`<div class="keyword">${word}</div>`).join('');section.innerHTML=`<div class="meta"><span><b>${String(index+1).padStart(2,'0')}</b> / SCENE</span><span>__TOPIC__</span></div><h1>${scene.title}</h1><div class="stage"><div class="keywords">${words}</div><div class="summary">${scene.narration.slice(0,90)}</div></div><div class="progress"><span style="width:${(index+1)/scenes.length*100}%"></span></div>`;root.appendChild(section)});
+    // 第二步：场景切换严格绑定真实旁白 end，不提前清空上一场景。
+    window.__timelines=window.__timelines||{};const tl=gsap.timeline({paused:true});
+    scenes.forEach((scene,index)=>{const id=`#${scene.id}`,start=Number(scene.start);tl.from(id+' .meta',{y:-24,opacity:0,duration:.4,ease:'expo.out'},start+.12).from(id+' h1',{x:-50,opacity:0,duration:.6,ease:'power4.out'},start+.3).from(id+' .stage',{scale:.98,opacity:0,duration:.6,ease:'sine.out'},start+.55).from(id+' .keyword',{y:30,opacity:0,duration:.4,stagger:.1,ease:'back.out(1.3)'},start+.9);if(index<scenes.length-1){const next=`#${scenes[index+1].id}`,cut=Number(scene.end);tl.to(id,{x:-1080,duration:.7,ease:'power3.inOut'},cut).fromTo(next,{x:1080,opacity:1},{x:0,opacity:1,duration:.7,ease:'power3.inOut',immediateRender:false},cut).set(id,{opacity:0},cut+.7)}});
+    window.__timelines['knowledge-video']=tl;
+  </script>
+</body>
+</html>
