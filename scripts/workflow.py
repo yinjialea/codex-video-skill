@@ -99,7 +99,19 @@ def build_workflow(config: dict[str, Any], output_dir: Path, render: bool = Fals
     voice_output = output_dir / "final-with-voice.mp4"
     subtitle_output = output_dir / "final-with-subtitles.mp4"
     run_command(build_voice_command({"ffmpeg_bin": config.get("ffmpeg_bin", "ffmpeg"), "video": silent, "audio": narration, "output": voice_output}))
-    run_command(build_subtitle_command({"ffmpeg_bin": config.get("ffmpeg_bin", "ffmpeg"), "video": silent, "audio": narration, "ass": output_dir / "subtitles.ass", "fonts_dir": composition, "output": subtitle_output}))
+    # Windows + FFmpeg 的 ass 滤镜在包含中文或空格的绝对路径上容易把冒号、反斜杠解析坏。
+    # 因此字幕烧录这一步切到 output_dir 下，用相对路径传给滤镜，保证中文工作区也能稳定合成。
+    run_command(
+        build_subtitle_command({
+            "ffmpeg_bin": config.get("ffmpeg_bin", "ffmpeg"),
+            "video": "explainer-silent.mp4",
+            "audio": "narration.wav",
+            "ass": "subtitles.ass",
+            "fonts_dir": "composition",
+            "output": "final-with-subtitles.mp4",
+        }),
+        cwd=output_dir,
+    )
     result.update({"status": "completed", "voice_video": str(voice_output), "subtitle_video": str(subtitle_output)})
     write_json(output_dir / "result-manifest.json", result)
     return result
